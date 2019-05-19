@@ -21,16 +21,16 @@ var svg = d3
   .attr("width", svgWidth)
   .attr("height", svgHeight)
   .append("g")
-  .attr("transform", `translate(${margin.left}, ${margin.top})`);;
+  .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 var chartGroup = svg.append("g");
  
 
 // Retrieve data from the CSV file and execute everything below
 //d3.csv("assets/data/data.csv", function(error, censusData) {
-d3.csv("data.csv").then(function(error, censusData) {
-  if (error) throw error;
-  //console.log(data);
+d3.csv("data.csv").then(function(censusData) {
+  //if (error) throw error;
+  //console.log(censusData);
   // parse data
   censusData.forEach(function(data) {
     data.obesity = +data.obesity;
@@ -50,11 +50,11 @@ d3.csv("data.csv").then(function(error, censusData) {
 
 
   //Scale the domain.
-	xLinearScale.domain([0, d3.max(data, function(data){
+	xLinearScale.domain([0, d3.max(censusData, function(data){
 		return +data.obesity;
 	})]);
 
-	yLinearScale.domain([0, d3.max(data,function(data){
+	yLinearScale.domain([0, d3.max(censusData,function(data){
 		return +data.healthcare;
   })]);
   
@@ -68,11 +68,11 @@ d3.csv("data.csv").then(function(error, censusData) {
     //.attr("cx", d => xLinearScale(d.obesity))
     //.attr("cy", d => yLinearScale(d.healthcare))
     .attr("cx", function(data, index) {
-      //console.log(data.poverty);
+      //console.log(data.obesity);
       return xLinearScale(data.obesity);
     })
     .attr("cy", function(data, index) {
-      console.log(data.healthcare);
+      //console.log(data.healthcare);
       return yLinearScale(data.healthcare);
     })
     .attr("r", 20)
@@ -82,25 +82,31 @@ d3.csv("data.csv").then(function(error, censusData) {
   // Create group for  2 x- axis labels
   //var labelsGroup = chartGroup.append("g")
   chartGroup.append("g")
-    .attr("transform", `translate(${width}, ${height})`);
+    .attr("transform", `translate(0, ${height})`)
+    .call(bottomAxis);
+
+    chartGroup.append("g")
+    .call(leftAxis);
 
   //
   chartGroup.append("text")
-    .attr("x", 0)
-    .attr("y", 20)
+    //.attr("x", 0)
+    //.attr("y", 20)
+    .attr("transform", `translate(${width / 2}, ${height + 40})`)
+    //.attr("transform", "translate(" + (chartWidth/3) + "," + (chartHeight + margin.top + 30) + ")") 
+    //.attr("transform", "translate(" + width / 2 + " ," + (height + margin.top + 30) + ")")
     //.attr("value", "obesity") // value to grab for event listener
     //.classed("active", true)
-    .attr("class", "active")
+    //.attr("class", "active")
     .text("Obesity (%)");
 
   // append y axis
   chartGroup.append("text")
     .attr("transform", "rotate(-90)")
     .attr("y", 0 - margin.left)
-    .attr("x", 0 - (height))
+    .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
-    //.classed("aText", true)
-    .attr("class", "aText")
+    .classed("aText", true)
     .text("Lacks Healthcare (%)");
 
 });
