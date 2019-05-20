@@ -35,7 +35,7 @@ d3.csv("data.csv").then(function(censusData) {
   censusData.forEach(function(data) {
     data.obesity = +data.obesity;
     data.healthcare = +data.healthcare;
-    data.abbr = +data.abbr;
+    data.abbr = data.abbr;
   });
 
 
@@ -65,8 +65,6 @@ d3.csv("data.csv").then(function(censusData) {
     .data(censusData)
     .enter()
     .append("circle")
-    //.attr("cx", d => xLinearScale(d.obesity))
-    //.attr("cy", d => yLinearScale(d.healthcare))
     .attr("cx", function(data, index) {
       //console.log(data.obesity);
       return xLinearScale(data.obesity);
@@ -75,12 +73,17 @@ d3.csv("data.csv").then(function(censusData) {
       //console.log(data.healthcare);
       return yLinearScale(data.healthcare);
     })
+    .text(function(data, index) {
+      //console.log(data.abbr);
+      return data.abbr;
+    })
     .attr("r", 20)
     .attr("fill", "skyblue")
     .attr("opacity", ".5");
 
   // Create group for  2 x- axis labels
   //var labelsGroup = chartGroup.append("g")
+
   chartGroup.append("g")
     .attr("transform", `translate(0, ${height})`)
     .call(bottomAxis);
@@ -90,14 +93,7 @@ d3.csv("data.csv").then(function(censusData) {
 
   //
   chartGroup.append("text")
-    //.attr("x", 0)
-    //.attr("y", 20)
     .attr("transform", `translate(${width / 2}, ${height + 40})`)
-    //.attr("transform", "translate(" + (chartWidth/3) + "," + (chartHeight + margin.top + 30) + ")") 
-    //.attr("transform", "translate(" + width / 2 + " ," + (height + margin.top + 30) + ")")
-    //.attr("value", "obesity") // value to grab for event listener
-    //.classed("active", true)
-    //.attr("class", "active")
     .text("Obesity (%)");
 
   // append y axis
